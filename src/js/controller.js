@@ -18,7 +18,7 @@ const timeout = function (s) {
 
 ///////////////////////////////////////
 
-const renderSpinner = function(parentEl){
+const renderSpinner = function (parentEl) {
   const markup = `
   <div class="spinner">
     <svg>
@@ -33,9 +33,14 @@ const renderSpinner = function(parentEl){
 // only in async funcs you can use 'await', func runs in background
 const showRecipe = async function () {
   try {
+    const id = window.location.hash.slice(1); //window.location is entire url
+
+    if (!id) return;
+
     // 1) Loading Recipe
     renderSpinner(recipeContainer);
-    const res = await fetch('https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bc886'); //the page stops here
+    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`); //the page stops here
+
     //https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bcd09
     const data = await res.json();
 
@@ -165,6 +170,12 @@ const showRecipe = async function () {
   } catch (err) {
     alert(err)
   }
-}
+};
 
-showRecipe();
+
+// For parcel to work this needs to have perfect syntax, including ;
+['hashchange', 'load'].forEach(ev => window.addEventListener(ev, showRecipe));
+
+
+// window.addEventListener('hashchange', showRecipe);
+// window.addEventListener('load', showRecipe);
