@@ -1,15 +1,11 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
+import searchView from './views/searchView.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
 // console.log(icons); //path to new icons file
-
-const recipeContainer = document.querySelector('.recipe');
-
-// https://forkify-api.herokuapp.com/v2
-
 ///////////////////////////////////////
 
 // only in async funcs you can use 'await', func runs in background
@@ -31,12 +27,30 @@ const controlRecipes = async function () {
     recipeView.renderError();
   }
 };
-
 // For parcel to work this needs to have perfect syntax, including ;
+
+const controlSearchResults = async function () {
+  try {
+    // 1) Get search query
+    const query = searchView.getQuery();
+    if (!query) return;
+
+    // 2) Load search results
+    await model.loadSearchResults(query);
+
+    // 3) Render results
+    console.log(model.state.search.results);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+controlSearchResults();
 
 // below uses publisher subscriber pattern
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
+  searchView.addHandlerSearch(controlSearchResults);
 };
 init();
 
