@@ -33,9 +33,14 @@ const controlRecipes = async function () {
 };
 
 // For parcel to work this needs to have perfect syntax, including ;
-['hashchange', 'load'].forEach(ev =>
-  window.addEventListener(ev, controlRecipes)
-);
 
-// window.addEventListener('hashchange', controlRecipes);
-// window.addEventListener('load', controlRecipes);
+// below uses publisher subscriber pattern
+const init = function () {
+  recipeView.addHandlerRender(controlRecipes);
+};
+init();
+
+/*
+1) Controller is the main module that controls what happens in the app. It delegates tasks to models and views.
+2) The controller.js file is linked with the index.html file, which makes it an entry point for all other JavaScript modules.
+*/

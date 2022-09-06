@@ -533,8 +533,10 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"aenu9":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _webImmediateJs = require("core-js/modules/web.immediate.js"); // window.addEventListener('hashchange', controlRecipes);
- // window.addEventListener('load', controlRecipes);
+var _webImmediateJs = require("core-js/modules/web.immediate.js"); /*
+1) Controller is the main module that controls what happens in the app. It delegates tasks to models and views.
+2) The controller.js file is linked with the index.html file, which makes it an entry point for all other JavaScript modules.
+*/ 
 var _modelJs = require("./model.js");
 var _recipeViewJs = require("./views/recipeView.js");
 var _recipeViewJsDefault = parcelHelpers.interopDefault(_recipeViewJs);
@@ -560,10 +562,11 @@ const controlRecipes = async function() {
     }
 };
 // For parcel to work this needs to have perfect syntax, including ;
-[
-    "hashchange",
-    "load"
-].forEach((ev)=>window.addEventListener(ev, controlRecipes));
+// below uses publisher subscriber pattern
+const init = function() {
+    (0, _recipeViewJsDefault.default).addHandlerRender(controlRecipes);
+};
+init();
 
 },{"core-js/modules/web.immediate.js":"49tUX","./model.js":"Y4A21","./views/recipeView.js":"l60JC","regenerator-runtime/runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"49tUX":[function(require,module,exports) {
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
@@ -2331,7 +2334,6 @@ const getJSON = async function(url) {
         if (!res.ok) throw new Error(`${data.message} (${res.status})`);
         return data;
     } catch (err) {
-        // console.log(err);
         throw err; //promise from getJSON will reject
     }
 };
@@ -2366,6 +2368,14 @@ class RecipeView {
     `;
         this.#clear();
         this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    addHandlerRender(handler) {
+        [
+            "hashchange",
+            "load"
+        ].forEach((ev)=>window.addEventListener(ev, handler));
+    // window.addEventListener('hashchange', handler);
+    // window.addEventListener('load', handler);
     }
      #generateMarkup() {
         return `
