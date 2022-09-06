@@ -558,7 +558,7 @@ const controlRecipes = async function() {
         // 2) Rendering recipe
         (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
     } catch (err) {
-        alert(err);
+        (0, _recipeViewJsDefault.default).renderError();
     }
 };
 // For parcel to work this needs to have perfect syntax, including ;
@@ -1703,7 +1703,8 @@ const loadRecipe = async function(id) {
         };
     } catch (err) {
         //Temp error
-        console.error(`${err} 💥💥💥💥💥`);
+        // console.error(`${err} 💥💥💥💥💥`);
+        throw err;
     }
 };
 
@@ -2349,6 +2350,8 @@ var _fractionalDefault = parcelHelpers.interopDefault(_fractional);
 class RecipeView {
     #parentElement = document.querySelector(".recipe");
     #data;
+    #errorMessage = "We could not find that recipe. Please try another one!";
+    #message = "";
     render(data) {
         this.#data = data;
         const markup = this.#generateMarkup();
@@ -2365,6 +2368,35 @@ class RecipeView {
         <use href="${(0, _iconsSvgDefault.default)}#icon-loader"></use>
       </svg>
     </div>
+    `;
+        this.#clear();
+        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    // default message if nothging is passed in
+    renderError(message = this.#errorMessage) {
+        const markup = `
+      <div class="error">
+          <div>
+            <svg>
+              <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
+            </svg>
+          </div> 
+          <p>${message}</p>
+      </div>
+    `;
+        this.#clear();
+        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderMessage(message = this.#message) {
+        const markup = `
+      <div class="message">
+          <div>
+            <svg>
+              <use href="${(0, _iconsSvgDefault.default)}#icon-smile"></use>
+            </svg>
+          </div> 
+          <p>${message}</p>
+      </div>
     `;
         this.#clear();
         this.#parentElement.insertAdjacentHTML("afterbegin", markup);
