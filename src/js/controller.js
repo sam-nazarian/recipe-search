@@ -3,6 +3,7 @@ import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -11,6 +12,7 @@ import 'regenerator-runtime/runtime';
 ///////////////////////////////////////
 
 // only in async funcs you can use 'await', func runs in background
+//Func happens when page loads
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1); //window.location is entire url
@@ -20,6 +22,7 @@ const controlRecipes = async function () {
 
     // 0) Update results view to mark selected search result
     resultsView.update(model.getSearchResultsPage());
+    bookmarksView.update(model.state.bookmarks);
 
     // 1) Loading Recipe
     // gives access to state.recipe
@@ -74,10 +77,25 @@ const controlServings = function (newServings) {
   recipeView.update(model.state.recipe);
 };
 
+const controlAddBookmark = function () {
+  // 1) Add/remove bookmark
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe);
+
+  // 2) Update recipe view
+  // console.log(model.state.recipe);
+  recipeView.update(model.state.recipe);
+
+  // 3) Render bookmarks
+  //model.state.bookmarks is an arr of objects containing info about recipes
+  bookmarksView.render(model.state.bookmarks);
+};
+
 // below uses publisher subscriber pattern
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
 };
