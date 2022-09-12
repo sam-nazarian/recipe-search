@@ -22,17 +22,21 @@ const controlRecipes = async function () {
 
     // 0) Update results view to mark selected search result
     resultsView.update(model.getSearchResultsPage());
-    bookmarksView.update(model.state.bookmarks);
 
-    // 1) Loading Recipe
+    // 1) Updating bookmarks view
+    // debugger;
+    bookmarksView.update(model.state.bookmarks); //to update highlighter of current selected link
+
+    // 2) Loading Recipe
     // gives access to state.recipe
     await model.loadRecipe(id); //awaiting since it is an async func, so returns a promise, stops execution of this func until loadRecipe is loaded
     // console.log(model.state.recipe);
 
-    // 2) Rendering recipe
+    // 3) Rendering recipe
     recipeView.render(model.state.recipe);
   } catch (err) {
     recipeView.renderError();
+    console.warn(err);
   }
 };
 // For parcel to work this needs to have perfect syntax, including ;
@@ -91,8 +95,13 @@ const controlAddBookmark = function () {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
+
 // below uses publisher subscriber pattern
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks); //as soon as site loads, render bookmarks
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
