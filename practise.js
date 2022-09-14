@@ -15,12 +15,19 @@
 //   console.log(numberResult);
 // })();
 
-const obj = {
-  firstName: 'sam',
-  lastName: 'dab',
-  age: '30',
-};
+// const obj = {
+//   firstName: 'sam',
+//   lastName: 'dab',
+//   age: '30',
+// };
 
-console.log(obj);
+// console.log(obj);
 
-console.log(...obj);
+// console.log(...obj);
+
+const firstName = 'Saman';
+const lastName = 'Fathnazarian';
+
+// template literals only accept expressions, that's why usually ; is not accepted
+// console.log(`Hi ${firstName} ${console.log('console.log()');}`); //woudl give an Error
+console.log(`Hi ${firstName} ${console.log('console.log()')}`);
